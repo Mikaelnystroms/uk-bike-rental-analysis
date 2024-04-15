@@ -1,6 +1,6 @@
 import os
 import requests
-from prefect import flow, task
+from prefect import flow, task, pause_flow_run
 import pandas as pd
 import glob
 from google.cloud import storage
@@ -10,46 +10,9 @@ from dotenv import load_dotenv
 load_dotenv()
 # gcp_cloud_storage_bucket_block = GcsBucket.load("gcp-auth")
 
-list_of_links = [
-    "https://cycling.data.tfl.gov.uk/usage-stats/351JourneyDataExtract02Jan2023-08Jan2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/352JourneyDataExtract09Jan2023-15Jan2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/353JourneyDataExtract16Jan2023-22Jan2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/354JourneyDataExtract23Jan2023-29Jan2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/355JourneyDataExtract30Jan2023-05Feb2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/356JourneyDataExtract06Feb2023-12Feb2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/357JourneyDataExtract13Feb2023-19Feb2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/358JourneyDataExtract20Feb2023-26Feb2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/359JourneyDataExtract27Feb2023-05Mar2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/360JourneyDataExtract06Mar2023-12Mar2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/361JourneyDataExtract13Mar2023-19Mar2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/362JourneyDataExtract20Mar2023-26Mar2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/363JourneyDataExtract27Mar2023-02Apr2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/364JourneyDataExtract03Apr2023-09Apr2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/365JourneyDataExtract10Apr2023-16Apr2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/366JourneyDataExtract17Apr2023-23Apr2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/367JourneyDataExtract24Apr2023-30Apr2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/368JourneyDataExtract01May2023-07May2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/369JourneyDataExtract08May2023-14May2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/370JourneyDataExtract15May2023-21May2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/371JourneyDataExtract22May2023-28May2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/372JourneyDataExtract29May2023-04Jun2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/373JourneyDataExtract05Jun2023-11Jun2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/374JourneyDataExtract12Jun2023-18Jun2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/375JourneyDataExtract19Jun2023-30Jun2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/376JourneyDataExtract01Jul2023-14Jul2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/377JourneyDataExtract15Jul2023-31Jul2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/378JourneyDataExtract01Aug2023-14Aug2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/378JourneyDataExtract15Aug2023-31Aug2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/379JourneyDataExtract01Sep2023-14Sep2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/380JourneyDataExtract15Sep2023-30Sep2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/381JourneyDataExtract01Oct2023-14Oct2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/382JourneyDataExtract15Oct2023-31Oct2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/383JourneyDataExtract01Nov2023-14Nov2023.csv",
-    "https://cycling.data.tfl.gov.uk/usage-stats/384JourneyDataExtract15Nov2023-30Nov2023.csv"
-    ]
 
 @task
-def load_data():
+def load_data(list_of_links):
     """
     Function that uses our list of links to download them to a directory,
     where we then can perform transformations and load the data to our cloud storage.
@@ -140,10 +103,11 @@ def upload_to_gcs(data, bucket_name, destination_blob_name):
 
     print(f"File uploaded to GCS: gs://{bucket_name}/{destination_blob_name}")
 
-@flow
+@flow(log_prints=True)
 def main():
     print("Starting data pipeline...")
-    output_dir = load_data()
+    list_of_links = pause_flow_run(wait_for_input=str)
+    output_dir = load_data(list_of_links)
     path_pattern = os.path.join(output_dir, "*JourneyDataExtract*.csv")
     csv_files = glob.glob(path_pattern)
 
