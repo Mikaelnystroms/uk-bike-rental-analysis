@@ -1,0 +1,39 @@
+name: UK_BIKE_RENTAL
+prefect-version: 2.16
+
+build:
+  - prefect_docker.deployments.steps.build_docker_image:
+      id: build_image
+      requires: prefect-docker>=0.3.1
+      image_name: prefecthq/prefect
+      tag: 2.16-python3.11
+      dockerfile: Dockerfile
+
+push:
+
+pull:
+  - prefect.deployments.steps.git_clone:
+      id: clone-step
+      repository: https://github.com/Mikaelnystroms/uk-bike-rental-analysis.git
+      branch: main
+      access_token: 
+        "{{ prefect.blocks.secret.github-access-token }}"
+  - prefect.deployments.steps.pip_install_requirements:
+      directory: "{{ clone-step.directory }}"
+      requirements_file: requirements.txt
+
+deployments:
+  - name: UK_BIKE_RENTAL
+    version: 0.0.1
+    tags: []
+    description:
+    schedule:
+      cron: "*/15 * * * *"
+      timezone: Europe/Stockholm
+    entrypoint: main.py:main
+    parameters: {}
+    work_pool:
+      name: gcp-workpool
+      work_queue_name:
+      job_variables:
+        image: "{{ build_image.image }}"
