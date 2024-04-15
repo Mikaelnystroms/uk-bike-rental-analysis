@@ -28,7 +28,6 @@ deployments:
     tags: []
     description:
     schedule:
-      cron: "*/15 * * * *"
       timezone: Europe/Stockholm
     entrypoint: main.py:main
     parameters: {}

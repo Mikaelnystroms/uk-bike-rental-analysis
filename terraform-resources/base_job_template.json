@@ -1,0 +1,188 @@
+{
+    "variables": {
+      "type": "object",
+      "required": [
+        "credentials"
+      ],
+      "properties": {
+        "cpu": {
+          "type": "string",
+          "title": "CPU",
+          "default": "4000m",
+          "example": "1000m",
+          "pattern": "^(\\d*000)m$",
+          "description": "The amount of compute allocated to the Cloud Run Job. (1000m = 1 CPU). See https://cloud.google.com/run/docs/configuring/cpu#setting-jobs."
+        },
+        "env": {
+          "type": "object",
+          "title": "Environment Variables",
+          "description": "Environment variables to set when starting a flow run.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "name": {
+          "type": "string",
+          "title": "Name",
+          "description": "Name given to created infrastructure."
+        },
+        "image": {
+          "type": "string",
+          "title": "Image Name",
+          "example": "docker.io/prefecthq/prefect:2-latest",
+          "description": "The image to use for a new Cloud Run Job. If not set, the latest Prefect image will be used. See https://cloud.google.com/run/docs/deploying#images."
+        },
+        "labels": {
+          "type": "object",
+          "title": "Labels",
+          "description": "Labels applied to created infrastructure.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "memory": {
+          "type": "string",
+          "title": "Memory",
+          "default": "4G",
+          "example": "512Mi",
+          "pattern": "^\\d+(?:G|Gi|M|Mi)$",
+          "description": "The amount of memory allocated to the Cloud Run Job. Must be specified in units of 'G', 'Gi', 'M', or 'Mi'. See https://cloud.google.com/run/docs/configuring/memory-limits#setting."
+        },
+        "region": {
+          "type": "string",
+          "title": "Region",
+          "default": "us-central1",
+          "example": "us-central1",
+          "description": "The region where the Cloud Run Job resides."
+        },
+        "command": {
+          "type": "string",
+          "title": "Command",
+          "description": "The command to use when starting a flow run. In most cases, this should be left blank and the command will be automatically generated."
+        },
+        "timeout": {
+          "type": "integer",
+          "title": "Job Timeout",
+          "default": 600,
+          "maximum": 3600,
+          "description": "The length of time that Prefect will wait for Cloud Run Job state changes.",
+          "exclusiveMinimum": 0
+        },
+        "keep_job": {
+          "type": "boolean",
+          "title": "Keep Job After Completion",
+          "default": false,
+          "description": "Keep the completed Cloud Run Job after it has run."
+        },
+        "credentials": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/GcpCredentials"
+            }
+          ],
+          "title": "GCP Credentials",
+          "default": {
+            "$ref": {
+              "block_document_id": "YOUR_GCP_CRED_ID - Set this up in the Prefect Cloud UI"
+            }
+          },
+          "description": "The GCP Credentials used to initiate the Cloud Run Job. `service_account_info` is required."
+        },
+        "vpc_connector_name": {
+          "type": "string",
+          "title": "VPC Connector Name",
+          "description": "The name of the VPC connector to use for the Cloud Run Job."
+        },
+        "service_account_name": {
+          "type": "string",
+          "title": "Service Account Name",
+          "example": "service-account@example.iam.gserviceaccount.com",
+          "description": "The name of the service account to use for the task execution of Cloud Run Job. By default Cloud Run jobs run as the default Compute Engine Service Account. "
+        }
+      },
+      "definitions": {
+        "GcpCredentials": {
+          "type": "object",
+          "title": "GcpCredentials",
+          "properties": {
+            "project": {
+              "type": "string",
+              "title": "Project",
+              "description": "The GCP project to use for the client."
+            },
+            "service_account_file": {
+              "type": "string",
+              "title": "Service Account File",
+              "format": "path",
+              "description": "Path to the service account JSON keyfile."
+            },
+            "service_account_info": {
+              "type": "object",
+              "title": "Service Account Info",
+              "description": "The contents of the keyfile as a dict."
+            }
+          },
+          "description": "Block used to manage authentication with GCP. Google authentication is handled via the `google.oauth2.\nSee Google's [Authentication documentation](https://cloud.google.com/docs/authentication#service-accounts)\nfor details on inference and recommended authentication patterns.",
+          "secret_fields": [
+            "service_account_info.*"
+          ],
+          "block_type_slug": "gcp-credentials",
+          "block_schema_references": {}
+        }
+      },
+      "description": "Default variables for the Cloud Run Push Pool.\n\nThe schema for this class is used to populate the `variables` section of the default\nbase job template."
+    },
+    "job_configuration": {
+      "env": "{{ env }}",
+      "name": "{{ name }}",
+      "labels": "{{ labels }}",
+      "region": "{{ region }}",
+      "command": "{{ command }}",
+      "timeout": "{{ timeout }}",
+      "job_body": {
+        "kind": "Job",
+        "spec": {
+          "template": {
+            "spec": {
+              "template": {
+                "spec": {
+                  "containers": [
+                    {
+                      "image": "{{ image }}",
+                      "command": "{{ command }}",
+                      "resources": {
+                        "limits": {
+                          "cpu": "{{ cpu }}",
+                          "memory": "{{ memory }}"
+                        },
+                        "requests": {
+                          "cpu": "{{ cpu }}",
+                          "memory": "{{ memory }}"
+                        }
+                      }
+                    }
+                  ],
+                  "timeoutSeconds": "{{ timeout }}",
+                  "serviceAccountName": "{{ service_account_name }}"
+                }
+              }
+            },
+            "metadata": {
+              "annotations": {
+                "run.googleapis.com/vpc-access-connector": "{{ vpc_connector_name }}"
+              }
+            }
+          }
+        },
+        "metadata": {
+          "name": "{{ name }}",
+          "annotations": {
+            "run.googleapis.com/launch-stage": "BETA"
+          }
+        },
+        "apiVersion": "run.googleapis.com/v1"
+      },
+      "keep_job": "{{ keep_job }}",
+      "credentials": "{{ credentials }}"
+    }
+  }
