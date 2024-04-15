@@ -5,6 +5,7 @@ import pandas as pd
 import glob
 from google.cloud import storage
 from dotenv import load_dotenv
+from requests.exceptions import RequestException
 # from prefect_gcp.cloud_storage import GcsBucket
 
 load_dotenv()
@@ -12,24 +13,23 @@ load_dotenv()
 
 
 @task
-def load_data(list_of_links):
-    """
-    Function that uses our list of links to download them to a directory,
-    where we then can perform transformations and load the data to our cloud storage.
-    """
+def load_data(link):
     output_dir = os.path.join(os.getcwd(), "data")
     print(f"Downloading files to directory: {output_dir}")
 
-    for link in list_of_links:
+    try:
+        print(f"Attempting to download from: {link}")
         response = requests.get(link)
         if response.status_code == 200:
-            file_name = os.path.basename(link)  # Extract the file name from the link
-            file_path = os.path.join(output_dir, file_name)  # Construct the file path
+            file_name = os.path.basename(link)
+            file_path = os.path.join(output_dir, file_name)
             with open(file_path, "wb") as file:
                 file.write(response.content)
             print(f"Downloaded: {file_name}")
         else:
-            print(f"Failed to download: {link}")
+            print(f"Failed to download with status code {response.status_code}: {link}")
+    except RequestException as e:
+        print(f"Request failed for {link}: {e}")
 
     print("File download completed.")
     return output_dir
@@ -106,8 +106,8 @@ def upload_to_gcs(data, bucket_name, destination_blob_name):
 @flow(log_prints=True)
 def main():
     print("Starting data pipeline...")
-    list_of_links = pause_flow_run(wait_for_input=str)
-    output_dir = load_data(list_of_links)
+    link = pause_flow_run(wait_for_input=str)
+    output_dir = load_data(link)
     path_pattern = os.path.join(output_dir, "*JourneyDataExtract*.csv")
     csv_files = glob.glob(path_pattern)
 
