@@ -27,8 +27,6 @@ deployments:
     version: 0.0.1
     tags: []
     description:
-    schedule:
-      timezone: Europe/Stockholm
     entrypoint: main.py:main
     parameters: {}
     work_pool:
