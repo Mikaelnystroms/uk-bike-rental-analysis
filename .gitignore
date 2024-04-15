@@ -159,5 +159,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Ignore all json files, to avoid uploading the service account json
 *.json
+
+# Ignore all csv files
 *.csv
