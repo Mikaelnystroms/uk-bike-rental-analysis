@@ -15,6 +15,8 @@ load_dotenv()
 @task
 def load_data(link):
     output_dir = os.path.join(os.getcwd(), "data")
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
     print(f"Downloading files to directory: {output_dir}")
 
     try:
