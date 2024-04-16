@@ -18,9 +18,9 @@ pull:
       branch: main
       access_token: 
         "{{ prefect.blocks.secret.github-access-token }}"
-  - prefect.deployments.steps.pip_install_requirements:
-      directory: "{{ clone-step.directory }}"
-      requirements_file: requirements.txt
+  # - prefect.deployments.steps.pip_install_requirements:
+  #     directory: "{{ clone-step.directory }}"
+  #     requirements_file: requirements.txt
 
 deployments:
   - name: UK_BIKE_RENTAL
