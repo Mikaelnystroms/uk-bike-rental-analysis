@@ -48,3 +48,27 @@ SELECT
     end_hour
 FROM 
     `uk_bike_rentals.trips_data_partitioned`;
+
+
+Create a view and add ", UK" to all start and end station names, making map visualizations correctly appear in the UK and not elsewhere in the world.
+
+CREATE OR REPLACE VIEW `de-zoomcamp-411615.uk_bike_rentals.trips_data_uk` AS
+SELECT
+  journey_id,
+  start_datetime,
+  start_station_id,
+  CONCAT(start_station_name, ', UK') AS start_station_name,
+  end_datetime,
+  end_station_id,
+  CONCAT(end_station_name, ', UK') AS end_station_name,
+  bike_id,
+  bike_model,
+  duration_str,
+  duration_ms,
+  start_date,
+  start_day,
+  start_hour,
+  end_day,
+  end_hour
+FROM
+  `de-zoomcamp-411615.uk_bike_rentals.trips_data`;

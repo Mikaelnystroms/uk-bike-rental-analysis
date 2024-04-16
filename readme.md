@@ -1,68 +1,98 @@
+# UK Bike Rental Data Analysis
+
+## Introduction
+
 Bike-sharing systems have increased in popularity across the UK as environmentally friendly and convenient transportation options. These systems generate data that can be analyzed to improve service efficiency and user experience. This project focuses on analyzing bike rental data from across the UK for the year 2023.
 
-Problem Statement
+If you have issues during the setup and usage of this repo, feel free to contact me and i'll gladly help guide you through it!
+
+## Problem Statement
+
 This project aims to analyze UK bike rental data from 2023 to identify patterns and trends that can enhance the efficiency and user engagement of bike-sharing systems. The project will address the following key questions:
 
-Demand Forecasting: Identify peak usage times and variations in bike rental demand by time and day to optimize bike availability.
-Geospatial Analysis: Determine high-demand locations and popular routes to guide the strategic placement of new rental stations.
+- **Demand Forecasting:** Identify peak usage times and variations in bike rental demand by time and day to optimize bike availability.
+- **Geospatial Analysis:** Determine high-demand locations and popular routes to guide the strategic placement of new rental stations.
+
 The insights derived from this analysis can potentially help urban planners and bike-sharing providers make informed decisions to improve the sustainability and functionality of their services.
 
-Project Overview: UK Bike Rental Data Analysis
-Introduction
-This capstone project employs a suite of modern technologies to analyze UK bike rental data from 2023, aiming to visualise the operational efficiency and user experience of bike-sharing systems.
+## Project Overview
 
-Infrastructure
-I have been using GCP services during the course of this project, and terraform for managing aspects of the infrastructure such as creating the cloud storage bucket.
+### Infrastructure
 
-Technologies and Architecture
-Data Ingestion and Transformation
-Prefect is used for robust data workflow management, allowing for dynamic data ingestion and transformation. I wanted to try out something that i've heard good things about but haven't explored during the zoomcamp DE-course. 
+- **GCP services** are used during the course of this project.
+- **Terraform** is used for managing aspects of the infrastructure such as creating the cloud storage bucket.
 
-Development Environment
-Development was conducted on a Google Cloud Platform (GCP) Virtual Machine (VM), utilizing Poetry for dependency management to ensure consistency across development environments. I have also prepared a dev container if you would rather run the project using github codespaces.
+### Technologies and Architecture
 
-Continuous Integration and Deployment (CI/CD)
-GitHub Actions automates the CI/CD pipeline, deploying updates to a Prefect work pool on GCP. This setup facilitates automatic updates and scheduling of the data pipeline.
+#### Data Ingestion and Transformation
 
-Data Processing and Storage
-Post-transformation, data is stored in Google Cloud Storage, then we make a partitioned and clustered dataset in Google BigQuery for optimized query performance.
+- **Prefect** is used for robust data workflow management, allowing for dynamic data ingestion and transformation.
 
-Visualization
-Looker Studio is used for visualizing and reporting on the data, helping to extract actionable insights through interactive dashboards.
+#### Development Environment
 
-This architecture ensures efficient handling, analysis, and visualization of our dataset, supporting scalable and effective data-driven decision-making.
+- Development was conducted on a **Google Cloud Platform (GCP) Virtual Machine (VM)**.
+- **Poetry** is used for dependency management to ensure consistency across development environments.
+- A dev container is prepared for running the project using **GitHub Codespaces**.
 
+#### Continuous Integration and Deployment (CI/CD)
 
-Pre-requisites
+- **GitHub Actions** automates the CI/CD pipeline, deploying updates to a Prefect work pool on GCP.
+- This setup facilitates automatic updates and scheduling of the data pipeline.
+
+#### Data Processing and Storage
+
+- Post-transformation, data is stored in **Google Cloud Storage**.
+- A partitioned and clustered dataset is created in **Google BigQuery** for optimized query performance.
+
+#### Visualization
+
+- **Looker Studio** is used for visualizing and reporting on the data, helping to extract actionable insights through interactive dashboards.
+
+## Getting Started
+
+### Pre-requisites
+
 - Google Cloud Platform account
-- Service account information for creation of cloud storage bucket, uploading of data and container instance deployment of Prefect flow. You may create a service account using google cloud console, and download the json file for your service account alternatively just use the content of the json file to authenticate. For more information on service accounts and required roles for creating the resources used in this project, please refer to google's documentation https://cloud.google.com/iam/docs/service-accounts-create (for this project you will need atleast cloud run developer, storage object admin, storage bucket creator, bigquery data owner permissions)
-- Terraform installed (see https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli for guidance on installation, alternatively Data Slinger has a wonderful primer on Terraform here: https://www.youtube.com/watch?v=s2bOYDCKl_M)
+- Service account information for creation of cloud storage bucket, uploading of data, and container instance deployment of Prefect flow.
+- Terraform installed
 
+### Steps
 
-The 'main.py' file is configured to accept a runtime parameter (A link to UK bike data) The idea for this is to make it possible to keep updating the data when new data is uploaded to the UK government site. Accepting runtime parameters is currently only possible via the Prefect UI.
+1. Clone the repository.
+2. Use Poetry to create a virtual environment and install required packages, or use pip to install from `requirements.txt`.
+3. Run `terraform init` to prepare necessary providers.
+4. Review and update the files in the `terraform_resources` directory with your own information.
+5. Run `terraform apply` to create the necessary infrastructure resources.
+6. Set up a Prefect workspace and work pool, and create a GCP Credentials block for authentication.
+7. Configure GitHub Actions secrets for CI/CD setup.
+8. Push code to the 'main' branch to trigger the GitHub Actions workflow.
+9. Perform a "Quick Run" of the Prefect deployment and provide input when prompted.
+10. Import the data from Google Cloud Storage to BigQuery and partition and cluster the dataset. See 'Queries.txt' for partitioning and clustering of the dataset as well as making a view for more accurate map visualization.
+11. Use Looker Studio to visualize the data and create interactive dashboards.
 
-The 'download_full_set.py' is intended to take all the links for the year 2023, perform necessary transformations for further analysis and upload this data to GCS. 
+## Visualizations and Insights
 
-My recommendation is to deploy the 'main.py' prefect flow to Prefect using github actions, making for a good learning experience in how to use terraform to set up the necessary resources, how to use prefect for ETL workflows as well as using github actions for easy CI/CD.
-After you have deployed the 'main.py' workflow to Prefect, we can use the 'download_full_set.py' in order to merge the data from 2023 and perform further analysis using bigquery and Looker Studio. 
+To address the problem statement, the following visualizations can be created using Looker Studio:
 
-Pre-requisites
-- Google Cloud Platform account
-- Service account information for creation of cloud storage bucket, uploading of data and container instance deployment of Prefect flow. You may create a service account using google cloud console, and download the json file for your service account alternatively just use the content of the json file to authenticate. For more information on service accounts and required roles for creating the resources used in this project, please refer to google's documentation https://cloud.google.com/iam/docs/service-accounts-create (for this project you will need atleast cloud run developer, storage object admin, storage bucket creator, bigquery data owner permissions)
-- Terraform installed (see https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli for guidance on installation, alternatively Data Slinger has a wonderful primer on Terraform here: https://www.youtube.com/watch?v=s2bOYDCKl_M)
+### Demand Forecasting:
 
-Getting started
-1. Clone this repository https://github.com/Mikaelnystroms/uk-bike-rental-analysis.git
-2. Use Poetry to make a venv and install required packages (https://python-poetry.org/docs/) use 'poetry install' when you have installed poetry
-3. If you don't want to use Poetry, use pip instead :) pip install -r requirements.txt
-4. Run Terraform init to prepare necessary providers, then look through the files in terraform_resources directory and make sure you enter your own information where applicable (api keys and urls for prefect and desired account name in main.tf and variables.tf)
-5. Run terraform apply to create the necessary infrastructure resources for the project
-6. Go to https://www.prefect.io/ and login with your account. Create a workspace and under the menu "Work Pool" create a cloud run:push type work pool. Under the menu "Blocks", create a new block using Prefects' GCP Credentials block and paste your service account json into 'service account info', use that block for authentication in your recently created work pool so Prefect can create container instances and upload data to Google Cloud Storage(GCS) when running jobs.
-7. Configure your github actions secrets for CI/CD setup, see '.github/workflows/deploy-prefect-flow.yaml' for what secrets you need to add in github actions, see here for more guidance on how to add secrets to github actions: https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions
-8. When you push code to the 'main' branch, the github actions workflow runs, updating and deploying your prefect workflow. After github actions has deployed the workflow, go to prefect.io and perform a "Quick Run" of the deployment. After a short while the flow run will pause, and in the top right corner you will have an option to "resume" which will prompt you for input. Enter one of the links in "listoflinks.txt" and the flow will continue, transforming the data and uploading it to GCS.
-9. When we have the data uploaded to GCS, go to the bigquery dataset created by Terraform (default name is 'uk_bike_rentals') From bigquery, import the data from the storage bucket 'uk_bike_rentals'.
-10. To make queries less costly and more efficient, we will partition the dataset by DATE from the start_datetime column and cluster the dataset by start_station_id and end_station_id. This clustering makes sense since we would like to find out more regarding the most/least popular stations and also perform some time series visualization.
+- Line charts showing the total number of bike rentals by hour of the day and day of the week to identify peak usage times.
+- Heatmaps representing the intensity of bike rental demand across different time periods.
 
+### Geospatial Analysis:
 
-link to visualization:
-https://lookerstudio.google.com/s/thD2-BJ1b-M
+- Bar charts displaying the most popular start and end stations to identify high-demand locations.
+- Maps with markers indicating the locations of rental stations, with marker size representing the popularity of each station.
+- Flow maps illustrating the most common routes taken by bike renters.
+
+Additional visualizations that can provide valuable insights include:
+
+- Pie chart showing the distribution of bike types rented.
+- Average trip duration by hour of the day and day of the week.
+- Comparison of rental patterns between weekdays and weekends.
+
+The interactive nature of Looker Studio dashboards allows for dynamic filtering and exploration of the data. For example, users can select a specific start station to see the most popular end stations and the hourly usage patterns for that particular station.
+
+By leveraging these visualizations, urban planners and bike-sharing providers can gain a better understanding of the demand patterns and popular locations, enabling them to optimize bike availability, strategically place new rental stations, and improve overall service efficiency.
+
+[Link to Looker Studio Dashboard](https://lookerstudio.google.com/reporting/4e845285-d288-4799-bf9a-8a951982bc9d)

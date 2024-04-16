@@ -1,7 +1,7 @@
 # resource "prefect_work_pool" "gcp-workpool" {
 #   name         = "my-work-pool"
 #   type         = "cloud_run:push"
-#   base_job_template = file("base_job_template.json")
+#   base_job_template = file("base_job_template.json") - Review this file and edit the "GCP Credentials ID" if using terraform to create a work pool. I found it more intuitive to use the Prefect Cloud UI to create the work pool.
 #   paused       = false
 #   workspace_id = var.prefect_workspace_id
 # }
