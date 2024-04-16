@@ -1,4 +1,5 @@
 # UK Bike Rental Data Analysis
+![image](https://github.com/Mikaelnystroms/uk-bike-rental-analysis/assets/67004061/ba735050-789d-46ef-acad-7f4a30be4a9e)
 
 ## Introduction
 
