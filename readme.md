@@ -6,6 +6,7 @@
 
 ![Dashboard 1][image_0]![Dashboard 2][image_1]
 
+
 ## Table of Contents
 - [Introduction](#introduction)
 - [Problem Statement](#problem-statement)
@@ -19,6 +20,16 @@
 - [Visualizations and Insights](#visualizations-and-insights)  - [Demand Forecasting](#demand-forecasting)  - [Geospatial Analysis](#geospatial-analysis)
 
 ## Introduction
+
+![Static Badge](https://img.shields.io/badge/Python-blue?logo=python&logoColor=yellow&labelColor=blue)
+![Static Badge](https://img.shields.io/badge/Prefect-black?logo=prefect)
+![Static Badge](https://img.shields.io/badge/Github%20Actions-blue?logo=githubactions&logoColor=white&color=%232088FF)
+![Static Badge](https://img.shields.io/badge/Terraform-%23844FBA?logo=terraform&logoColor=black)
+![Static Badge](https://img.shields.io/badge/BigQuery-%23669DF6?logo=googlebigquery&logoColor=black)
+![Static Badge](https://img.shields.io/badge/Docker-%232496ED?logo=docker)
+![Static Badge](https://img.shields.io/badge/Looker%20Studio-%234285F4?logo=looker)
+![Static Badge](https://img.shields.io/badge/Poetry-%2360A5FA?logo=poetry)
+
 
 Bike-sharing systems have increased in popularity across the UK as environmentally friendly and convenient transportation options. These systems generate data that can be analyzed to improve service efficiency and user experience. This project focuses on analyzing bike rental data from across the UK for the year 2023.
 
