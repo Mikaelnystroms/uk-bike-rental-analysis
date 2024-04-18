@@ -29,7 +29,7 @@ jobs:
         uses: PrefectHQ/actions-prefect-auth@v1
         with:
           prefect-api-key: ${{ secrets.PREFECT_API_KEY }}
-          prefect-workspace: mikaelnystrom/default
+          prefect-workspace: YOUR_WORKSPACE PATH - For example "username/default"
 
       - name: Prefect Deploy
         env:
