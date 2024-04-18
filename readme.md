@@ -1,13 +1,28 @@
-# UK Bike Rental Data Analysis
-<img width="1203" alt="image" src="https://github.com/Mikaelnystroms/uk-bike-rental-analysis/assets/67004061/74a8a8d5-d0e0-4863-ade1-a1641a7afd93">
-<img width="1660" alt="image" src="https://github.com/Mikaelnystroms/uk-bike-rental-analysis/assets/67004061/2b3ddc49-0ebe-4eae-98f1-80ec95ea6f9d">
+[image_0]: https://pfst.cf2.poecdn.net/base/image/4b3d800b889cfc061102ec2fab8bf30b02fe925a16c0a65de921f4ddf249021a?w=2406&h=1798&pmaid=69420488
+[image_1]: https://pfst.cf2.poecdn.net/base/image/7f3e75ca7d9af277e2aa90378f5f428839d6172250f15ab2b6e00e597d5e6898?w=3320&h=822&pmaid=69420504
+Here's the updated and structured README:
 
+# UK Bike Rental Data Analysis
+
+![Dashboard 1][image_0]![Dashboard 2][image_1]
+
+## Table of Contents
+- [Introduction](#introduction)
+- [Problem Statement](#problem-statement)
+- [Project Overview](#project-overview)  - [Infrastructure](#infrastructure)  - [Technologies and Architecture](#technologies-and-architecture)
+    - [Data Ingestion and Transformation](#data-ingestion-and-transformation)
+    - [Development Environment](#development-environment)
+    - [Continuous Integration and Deployment (CI/CD)](#continuous-integration-and-deployment-cicd)
+    - [Data Processing and Storage](#data-processing-and-storage)
+    - [Visualization](#visualization)
+- [Getting Started](#getting-started)  - [Pre-requisites](#pre-requisites)  - [Steps](#steps)
+- [Visualizations and Insights](#visualizations-and-insights)  - [Demand Forecasting](#demand-forecasting)  - [Geospatial Analysis](#geospatial-analysis)
 
 ## Introduction
 
 Bike-sharing systems have increased in popularity across the UK as environmentally friendly and convenient transportation options. These systems generate data that can be analyzed to improve service efficiency and user experience. This project focuses on analyzing bike rental data from across the UK for the year 2023.
 
-If you have issues during the setup and usage of this repo, feel free to contact me and i'll gladly help guide you through it! @mikaelnystrom on Telegram. 
+If you have issues during the setup and usage of this repo, feel free to contact me and I'll gladly help guide you through it! @mikaelnystrom on Telegram.
 
 ## Problem Statement
 
@@ -69,13 +84,14 @@ The insights derived from this analysis can potentially help urban planners and 
 6. Set up a Prefect workspace and work pool, and create a GCP Credentials block for authentication. If you have made a private repository for this project, you will also need to setup github credentials in Prefect so you can clone the repo when deploying.
 7. Configure GitHub Actions secrets for CI/CD setup. You need to setup the secrets 'PREFECT_API_KEY', 'PREFECT_API_URL', as well as 'DOCKER_USERNAME' and 'DOCKER_PASSWORD' (if using docker hub for your deployment.) in github actions. [info on how to find prefect api url and key](https://docs.prefect.io/latest/api-ref/rest-api/)
 8. Push code to the 'main' branch to trigger the GitHub Actions workflow. The 'prefect.yaml' file also allows versioning of our workflow.
-9. Perform a "Quick Run" of the Prefect deployment. After a while, the flow will run and pause giving you the option in the top right corner to "resume". When clicking resume, it will prompt you for a link to fetch the data from. Feel free to use one of the links in the 'listoflinks.txt'. Prefect flows can also be configured to run on schedule if you have source links that are predictable and uploads new data with a regular frequency, or from an API for example. If you want to try scheduling it, just add these two lines to the `deployments` section of your `prefect.yaml` file:
-schedule:
-  cron: "0 7-19/2 * * *"
-  timezone: Europe/Stockholm 
-For this project however, we'll use a parameterized batch run in prefect as an example, and the option to ingest all data at once using the 'download_full_set.py' script.
-10. If you would rather run the code locally, simply run the python scripts as you would with any python script. The decorators @task and @flow is what makes them prefect runs. Make sure the `GOOGLE_APPLICATION_CREDENTIALS`env variable is set to the filepath of your service account json. Make sure you also set the bucket_name variable in the script(s).
+9. Perform a "Quick Run" of the Prefect deployment. After a while, the flow will run and pause giving you the option in the top right corner to "resume". When clicking resume, it will prompt you for a link to fetch the data from. Feel free to use one of the links in the 'listoflinks.txt'. Prefect flows can also be configured to run on schedule if you have source links that are predictable and uploads new data with a regular frequency, or from an API for example. If you want to try scheduling it, just add these two lines to the `deployments` section of your `prefect.yaml` file:   ```   schedule:
+     cron: "0 7-19/2 * * *"
+     timezone: Europe/Stockholm    ```   For this project however, we'll use a parameterized batch run in prefect as an example, and the option to ingest all data at once using the 'download_full_set.py' script.
+
+10. If you would rather run the code locally, simply run the python scripts as you would with any python script. The decorators `@task` and `@flow` is what makes them prefect runs. Make sure the `GOOGLE_APPLICATION_CREDENTIALS` env variable is set to the filepath of your service account json. Make sure you also set the `bucket_name` variable in the script(s).
+
 11. Import the data from Google Cloud Storage to BigQuery and partition and cluster the dataset. See 'queries.txt' for partitioning and clustering of the dataset in bigquery as well as making a view for more accurate map visualization.
+
 12. Use Looker Studio to visualize the data and create interactive dashboards. See link at the bottom of this readme to the dashboard I created if you want inspiration :)
 
 ## Visualizations and Insights
