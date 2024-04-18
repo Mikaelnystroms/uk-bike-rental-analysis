@@ -6,11 +6,12 @@ import glob
 from google.cloud import storage
 from dotenv import load_dotenv
 from requests.exceptions import RequestException
-# from prefect_gcp.cloud_storage import GcsBucket
+
 
 load_dotenv()
-# gcp_cloud_storage_bucket_block = GcsBucket.load("gcp-auth")
 
+
+bucket_name = "YOUR_BUCKET_NAME"
 
 @task
 def load_data(link):
@@ -117,7 +118,7 @@ def main():
         transformed_data = transform_data(file_path)
         file_name = os.path.basename(file_path)
         destination_blob_name = f"uk_bike_data_{file_name}"
-        upload_to_gcs(transformed_data, 'uk_bike_rentals', destination_blob_name)
+        upload_to_gcs(transformed_data, bucket_name, destination_blob_name)
 
     print("Data pipeline completed successfully.")
 

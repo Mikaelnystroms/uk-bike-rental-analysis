@@ -9,6 +9,7 @@ from prefect import task, flow
 
 load_dotenv()
 
+bucket_name = "YOUR_BUCKET_NAME"
 
 list_of_links = [
     "https://cycling.data.tfl.gov.uk/usage-stats/351JourneyDataExtract02Jan2023-08Jan2023.csv",
@@ -143,18 +144,18 @@ def upload_to_gcs(data, bucket_name, destination_blob_name):
 
     print(f"File uploaded to GCS: gs://{bucket_name}/{destination_blob_name}")
 
-@flow
+@flow(log_prints=True)
 def main():
     print("Starting data pipeline...")
     output_dir = load_data(list_of_links)
-    path_pattern = os.path.join(output_dir, "JourneyDataExtract.csv")
+    path_pattern = os.path.join(output_dir, "*JourneyDataExtract*.csv")
     csv_files = glob.glob(path_pattern)
 
     for file_path in csv_files:
         transformed_data = transform_data(file_path)
         file_name = os.path.basename(file_path)
         destination_blob_name = f"uk_bike_data_{file_name}"
-        upload_to_gcs(transformed_data, 'uk_bike_rentals', destination_blob_name)
+        upload_to_gcs(transformed_data, bucket_name, destination_blob_name)
 
     print("Data pipeline completed successfully.")
 

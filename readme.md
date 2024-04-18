@@ -63,14 +63,14 @@ The insights derived from this analysis can potentially help urban planners and 
 
 1. Clone the repository.
 2. Use Poetry to create a virtual environment and install required packages, or use pip to install from `requirements.txt`.
-3. Run `terraform init` to prepare necessary providers (Prefect and GCP).
+3. Run `cd terraform-resources` and then `terraform init` to prepare necessary providers (Prefect and GCP).
 4. Review and update the files in the `terraform_resources` directory with your own information.
 5. Run `terraform apply` to create the necessary infrastructure resources.
 6. Set up a Prefect workspace and work pool, and create a GCP Credentials block for authentication. If you have made a private repository for this project, you will also need to setup github credentials in Prefect so you can clone the repo when deploying.
-7. Configure GitHub Actions secrets for CI/CD setup. You need to setup the secrets 'PREFECT_API_KEY', 'PREFECT_API_URL', as well as 'DOCKER_USERNAME' and 'DOCKER_PASSWORD' (if using docker hub for your deployment.) [info on how to find prefect api url and key](https://docs.prefect.io/latest/api-ref/rest-api/)
+7. Configure GitHub Actions secrets for CI/CD setup. You need to setup the secrets 'PREFECT_API_KEY', 'PREFECT_API_URL', as well as 'DOCKER_USERNAME' and 'DOCKER_PASSWORD' (if using docker hub for your deployment.) in github actions. [info on how to find prefect api url and key](https://docs.prefect.io/latest/api-ref/rest-api/)
 8. Push code to the 'main' branch to trigger the GitHub Actions workflow. The 'prefect.yaml' file also allows versioning of our workflow.
 9. Perform a "Quick Run" of the Prefect deployment. After a while, the flow will run and pause giving you the option in the top right corner to "resume". When clicking resume, it will prompt you for a link to fetch the data from. Feel free to use one of the links in the 'listoflinks.txt'. Prefect flows can also be configured to run on schedule if you have source links that are predictable and uploads new data with a regular frequency. For this project however, we'll use a parameterized run in prefect as an example, and the option to ingest all data at once using the 'download_full_set.py' script.
-10. If you would rather run the code locally, simply run the python scripts as you would with any python script. The decorators @task and @flow is what makes them prefect runs. 
+10. If you would rather run the code locally, simply run the python scripts as you would with any python script. The decorators @task and @flow is what makes them prefect runs. Make sure the `GOOGLE_APPLICATION_CREDENTIALS`env variable is set to the filepath of your service account json. Make sure you also set the bucket_name variable in the python script(s).
 11. Import the data from Google Cloud Storage to BigQuery and partition and cluster the dataset. See 'queries.txt' for partitioning and clustering of the dataset as well as making a view for more accurate map visualization.
 12. Use Looker Studio to visualize the data and create interactive dashboards.
 
