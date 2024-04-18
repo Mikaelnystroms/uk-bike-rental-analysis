@@ -1,6 +1,6 @@
 [image_0]: https://pfst.cf2.poecdn.net/base/image/4b3d800b889cfc061102ec2fab8bf30b02fe925a16c0a65de921f4ddf249021a?w=2406&h=1798&pmaid=69420488
 [image_1]: https://pfst.cf2.poecdn.net/base/image/7f3e75ca7d9af277e2aa90378f5f428839d6172250f15ab2b6e00e597d5e6898?w=3320&h=822&pmaid=69420504
-Here's the updated and structured README:
+
 
 # UK Bike Rental Data Analysis
 
