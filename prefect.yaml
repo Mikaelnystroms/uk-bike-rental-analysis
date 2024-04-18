@@ -14,7 +14,7 @@ push:
 pull:
   - prefect.deployments.steps.git_clone:
       id: clone-step
-      repository: https://github.com/Mikaelnystroms/uk-bike-rental-analysis.git
+      repository: YOUR_REPO_URL
       branch: main
       access_token: 
         "{{ prefect.blocks.secret.github-access-token }}"
@@ -30,7 +30,7 @@ deployments:
     entrypoint: main.py:main
     parameters: {}
     work_pool:
-      name: gcp-workpool
+      name: YOUR_WORKPOOL_NAME
       work_queue_name:
       job_variables:
         image: "{{ build_image.image }}"
